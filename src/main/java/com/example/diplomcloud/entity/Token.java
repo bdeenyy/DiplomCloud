@@ -47,5 +47,4 @@ public class Token {
         this.userId = userId;
     }
 
-    // Геттеры и сеттеры
 }

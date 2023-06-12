@@ -1,86 +1,59 @@
 package com.example.diplomcloud.service;
 
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+import com.example.diplomcloud.entity.FileEntity;
+import com.example.diplomcloud.repository.FileRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 
 @Service
 public class FileService {
     private final TokenService tokenService;
+    private final FileRepository fileRepository;
 
-    public FileService(TokenService tokenService) {
+    public FileService(TokenService tokenService, FileRepository fileRepository) {
         this.tokenService = tokenService;
+        this.fileRepository = fileRepository;
     }
 
     public void uploadFile(String authToken, String filename, MultipartFile file) {
         // Проверяем токен аутентификации
-        if (!tokenService.isValid(authToken)) {
-            throw new RuntimeException("Недействительный токен аутентификации");
-        }
+        checkAuthToken(authToken);
 
-        // Сохраняем файл на сервере
-        try {
-            Path filePath = Paths.get("/path/to/upload/dir", filename);
-            Files.copy(file.getInputStream(), filePath);
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка при сохранении файла", e);
-        }
+        // Сохраняем информацию о файле в базе данных
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setFilename(filename);
+        fileEntity.setSize(file.getSize());
+        fileRepository.save(fileEntity);
     }
 
     public void deleteFile(String authToken, String filename) {
         // Проверяем токен аутентификации
-        if (!tokenService.isValid(authToken)) {
-            throw new RuntimeException("Недействительный токен аутентификации");
-        }
+        checkAuthToken(authToken);
 
-        // Удаляем файл с сервера
-        try {
-            Path filePath = Paths.get("/path/to/upload/dir", filename);
-            Files.delete(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка при удалении файла", e);
-        }
+        // Удаляем информацию о файле из базы данных
+        fileRepository.deleteByFilename(filename);
     }
 
-    public Resource downloadFile(String authToken, String filename) {
+    public FileEntity downloadFile(String authToken, String filename) {
         // Проверяем токен аутентификации
-        if (!tokenService.isValid(authToken)) {
-            throw new RuntimeException("Недействительный токен аутентификации");
-        }
+        checkAuthToken(authToken);
 
-        // Загружаем файл с сервера
-        Path filePath = Paths.get("/path/to/upload/dir", filename);
-        Resource fileResource = null;
-        try {
-            fileResource = new UrlResource(filePath.toUri());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return fileResource;
+        // Получаем информацию о файле из базы данных
+        return fileRepository.findByFilename(filename);
     }
 
     public void editFileName(String authToken, String filename, String newFilename) {
         // Проверяем токен аутентификации
+        checkAuthToken(authToken);
+
+        // Изменяем имя файла в базе данных
+        fileRepository.updateFilename(filename, newFilename);
+    }
+
+    private void checkAuthToken(String authToken) {
         if (!tokenService.isValid(authToken)) {
             throw new RuntimeException("Недействительный токен аутентификации");
-        }
-
-        // Изменяем имя файла на сервере
-        try {
-            Path oldFilePath = Paths.get("/path/to/upload/dir", filename);
-            Path newFilePath = Paths.get("/path/to/upload/dir", newFilename);
-            Files.move(oldFilePath, newFilePath);
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка при изменении имени файла", e);
         }
     }
 }

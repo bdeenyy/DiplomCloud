@@ -1,4 +1,4 @@
-package com.example.diplomcloud;
+package com.example.diplomcloud.service;
 
 import org.springframework.stereotype.Service;
 

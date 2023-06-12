@@ -1,6 +1,6 @@
 package com.example.diplomcloud.controller;
 
-import com.example.diplomcloud.ListService;
+import com.example.diplomcloud.service.ListService;
 import com.example.diplomcloud.service.TokenService;
 import org.springframework.web.bind.annotation.*;
 

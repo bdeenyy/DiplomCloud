@@ -1,10 +1,8 @@
 package com.example.diplomcloud.controller;
 
 import com.example.diplomcloud.dto.EditFileNameRequest;
+import com.example.diplomcloud.entity.FileEntity;
 import com.example.diplomcloud.service.FileService;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 @RestController
@@ -30,13 +28,9 @@ public class FileController {
     }
 
     @GetMapping
-    public ResponseEntity<Resource> downloadFile(@RequestHeader("auth-token") String authToken,
-                                                 @RequestParam("filename") String filename) {
-        Resource fileResource = fileService.downloadFile(authToken, filename);
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-                .body(fileResource);
+    public FileEntity downloadFile(@RequestHeader("auth-token") String authToken,
+                                   @RequestParam("filename") String filename) {
+        return fileService.downloadFile(authToken, filename);
     }
 
     @PutMapping

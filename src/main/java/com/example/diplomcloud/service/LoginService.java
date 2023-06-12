@@ -1,12 +1,9 @@
 package com.example.diplomcloud.service;
 
-import com.example.diplomcloud.entity.Token;
 import com.example.diplomcloud.entity.User;
-import com.example.diplomcloud.repository.TokenRepository;
 import com.example.diplomcloud.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
 
 @Service
 public class LoginService {
@@ -22,13 +19,18 @@ public class LoginService {
     public String login(String login, String password) {
         // Проверяем учетные данные пользователя
         User user = userRepository.findByLogin(login);
-        if (user == null || !password.equals(user.getPassword())) {
+        if (user == null) {
+            // Создаем нового пользователя
+            user = new User();
+            user.setLogin(login);
+            user.setPassword(password);
+            userRepository.save(user);
+        } else if (!password.equals(user.getPassword())) {
             throw new RuntimeException("Неверные учетные данные");
         }
 
         // Создаем новый токен аутентификации
-        String authToken = tokenService.createToken(user.getId());
-        return authToken;
+        return tokenService.createToken(user.getId());
     }
 
     public void logout(String authToken) {
