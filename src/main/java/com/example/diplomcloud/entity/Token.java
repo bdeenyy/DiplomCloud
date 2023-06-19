@@ -20,7 +20,6 @@ public class Token {
     }
 
     public Token() {
-
     }
 
     public Long getId() {

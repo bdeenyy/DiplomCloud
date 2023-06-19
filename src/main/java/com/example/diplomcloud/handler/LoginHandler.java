@@ -16,14 +16,14 @@ public class LoginHandler {
     public String handleLogin(String login, String password) {
         try {
             // Попытка авторизации пользователя с помощью сервиса
-            String token = loginService.login(login, password);
             // Возвращаем токен
-            return token;
+            return loginService.login(login, password);
         } catch (BadCredentialsException e) {
             // В случае неверных учетных данных возвращаем сообщение об ошибке
             return "Неверные учетные данные";
         }
     }
+
     public void handleLogout(String token) {
         // Вызываем метод сервиса для удаления токена
         loginService.logout(token);
