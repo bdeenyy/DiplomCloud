@@ -3,6 +3,7 @@ package com.example.diplomcloud.controller;
 import com.example.diplomcloud.dto.LoginRequest;
 import com.example.diplomcloud.dto.LoginResponse;
 import com.example.diplomcloud.handler.LoginHandler;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,8 @@ public class LoginController {
 
     // Метод для авторизации пользователя
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        logger.info("Received login request for user: {}", loginRequest.getLogin());
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        logger.debug("Received login request for user: {}", loginRequest.getLogin());
         // Обрабатываем запрос на авторизацию с помощью LoginHandler
         String response = loginHandler.handleLogin(loginRequest.getLogin(), loginRequest.getPassword());
         // Создаем новый объект LoginResponse с полученным токеном

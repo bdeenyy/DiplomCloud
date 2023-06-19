@@ -1,8 +1,11 @@
 package com.example.diplomcloud.handler;
 
 import com.example.diplomcloud.exception.BadCredentialsException;
+import com.example.diplomcloud.exception.UserNotFoundException;
 import com.example.diplomcloud.service.LoginService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class LoginHandler {
@@ -18,9 +21,14 @@ public class LoginHandler {
             // Попытка авторизации пользователя с помощью сервиса
             // Возвращаем токен
             return loginService.login(login, password);
+        } catch (UserNotFoundException e) {
+            // Если пользователь не найден, регистрируем нового пользователя
+            loginService.register(login, password);
+            // Повторная попытка авторизации
+            return loginService.login(login, password);
         } catch (BadCredentialsException e) {
-            // В случае неверных учетных данных возвращаем сообщение об ошибке
-            return "Неверные учетные данные";
+            // В случае неверных учетных данных выбрасываем исключение
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Неверные учетные данные");
         }
     }
 

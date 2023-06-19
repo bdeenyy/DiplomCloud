@@ -1,8 +1,13 @@
 package com.example.diplomcloud.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginRequest {
 
+    @NotBlank(message = "Логин не может быть пустым")
     private String login;
+
+    @NotBlank(message = "Пароль не может быть пустым")
     private String password;
 
     public LoginRequest() {
