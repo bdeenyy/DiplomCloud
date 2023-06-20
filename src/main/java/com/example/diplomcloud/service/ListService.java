@@ -44,7 +44,7 @@ public class ListService {
                 .map(file -> new FileDTO(file.getFilename(), file.getSize() == null ? 0 : file.getSize()))
                 .collect(Collectors.toList());
 
-        logger.info("Files retrieved successfully: {}", result.size());
+        logger.debug("Files retrieved successfully: {}", result.size());
         return result;
     }
 }

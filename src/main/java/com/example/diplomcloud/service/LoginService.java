@@ -41,26 +41,11 @@ public class LoginService {
         return token;
     }
 
-
     public void logout(String token) {
         logger.debug("Logging out user with token: {}", token);
         // Удаляем токен
         tokenService.removeToken(token);
         logger.debug("User logged out successfully");
-    }
-
-    private String getPasswordHashFromDatabase(String login) {
-        // Ищем пользователя по логину
-        User user = userRepository.findByLogin(login);
-        // Возвращаем хеш пароля пользователя
-        return user.getPassword();
-    }
-
-    private Long getUserIdByLogin(String login) {
-        // Ищем пользователя по логину
-        User user = userRepository.findByLogin(login);
-        // Возвращаем идентификатор пользователя
-        return user.getId();
     }
 
     public void register(String login, String password) {
