@@ -1,10 +1,10 @@
 package com.example.diplomcloud.controller;
 
-import com.example.diplomcloud.entity.FileEntity;
 import com.example.diplomcloud.handler.FileHandler;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,12 +37,15 @@ public class FileController {
     }
 
     @GetMapping
-    public FileEntity downloadFile(@RequestHeader("auth-token") String authToken,
-                                   @RequestParam("filename") String filename) {
+    public byte[] downloadFile(@RequestHeader("auth-token") String authToken,
+                               @RequestParam("filename") String filename) {
         logger.debug("Received download file request: {}", filename);
-        FileEntity file = fileHandler.handleDownloadFile(authToken, filename);
+
+        // Получаем бинарные данные файла из базы данных
+        byte[] data = fileHandler.handleDownloadFile(authToken, filename);
+
         logger.info("File downloaded successfully: {}", filename);
-        return file;
+        return data;
     }
 
     @PutMapping

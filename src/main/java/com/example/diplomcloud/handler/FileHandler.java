@@ -1,6 +1,5 @@
 package com.example.diplomcloud.handler;
 
-import com.example.diplomcloud.entity.FileEntity;
 import com.example.diplomcloud.service.FileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,25 +15,20 @@ public class FileHandler {
     public void handleUploadFile(String authToken, String filename, MultipartFile file) {
         // Загружаем файл с помощью FileService
         fileService.uploadFile(authToken, filename, file);
-
     }
 
     public void handleDeleteFile(String authToken, String filename) {
         // Удаляем файл с помощью FileService
         fileService.deleteFile(authToken, filename);
-
     }
 
-    public FileEntity handleDownloadFile(String authToken, String filename) {
+    public byte[] handleDownloadFile(String authToken, String filename) {
         // Скачиваем файл с помощью FileService
-        FileEntity file = fileService.downloadFile(authToken, filename);
-
-        return file;
+        return fileService.downloadFile(authToken, filename);
     }
 
     public void handleEditFileName(String authToken, String filename, String newFilename) {
         // Изменяем имя файла с помощью FileService
         fileService.editFileName(authToken, filename, newFilename);
-
     }
 }
